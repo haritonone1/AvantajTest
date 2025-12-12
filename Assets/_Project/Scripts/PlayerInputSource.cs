@@ -17,11 +17,6 @@ public sealed class PlayerInputSource : MonoBehaviour, IInputSource
     {
         actions = new InputSystem_Actions();
     }
-    
-    private void Update()
-    {
-        Debug.Log($"Move: {Move}, Look: {Look}, Interact: {Interact}, Sprint: {Sprint}, Jump: {Jump}");
-    }
 
     private void OnEnable()
     {
