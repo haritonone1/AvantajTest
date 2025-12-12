@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6320028487637338531}
   - component: {fileID: 1966116003496812627}
   - component: {fileID: 7667630065944583188}
-  - component: {fileID: 6791947249748052586}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -90,29 +89,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &6791947249748052586
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2855956019784921525}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4025160666974418102
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,6 +98,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 123270781266226655}
+  - component: {fileID: 6872498130751220883}
+  - component: {fileID: 8157298856391349577}
   - component: {fileID: 1078215036654326896}
   - component: {fileID: 6183200453703031678}
   - component: {fileID: 4682303888354085231}
@@ -129,6 +107,7 @@ GameObject:
   - component: {fileID: 6655047295907204436}
   - component: {fileID: 7901800722267128437}
   - component: {fileID: 4010102881633867614}
+  - component: {fileID: 6351384763157934256}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -153,6 +132,56 @@ Transform:
   - {fileID: 1251538072910379939}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &6872498130751220883
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025160666974418102}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &8157298856391349577
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025160666974418102}
+  serializedVersion: 5
+  m_Mass: 80
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 2
 --- !u!114 &1078215036654326896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 148423741
+  GlobalObjectIdHash: 2357882980
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -247,7 +276,7 @@ MonoBehaviour:
   player: {fileID: 123270781266226655}
   cameraPitch: {fileID: 1251538072910379939}
   cinemachineCamera: {fileID: 4774759067537381552}
-  sensitivity: 1
+  sensitivity: 0.1
   minPitch: -80
   maxPitch: 80
 --- !u!114 &4010102881633867614
@@ -262,8 +291,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51f915f8df3c42b41a41ad2f03d5fa79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OnFootController
+  movement: {fileID: 6351384763157934256}
   cameraController: {fileID: 7901800722267128437}
-  speed: 5
+--- !u!114 &6351384763157934256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025160666974418102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c35f0ecf06de2b4c8b34b03c0ddd8e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OnFootMovement
+  walkSpeed: 4
+  sprintSpeed: 7
+  acceleration: 1
+  jumpForce: 255
+  groundCheckDistance: 0.2
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &4774759067537381552
 GameObject:
   m_ObjectHideFlags: 0

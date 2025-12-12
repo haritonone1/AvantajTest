@@ -12,6 +12,7 @@ public sealed class PlayerRoot : NetworkBehaviour
     {
         if (!IsOwner)
         {
+            inputSource.enabled = false;
             cameraController.Disable();
             return;
         }
