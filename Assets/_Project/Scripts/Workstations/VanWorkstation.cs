@@ -21,23 +21,24 @@ public sealed class VanWorkstation : Workstation
             occupiedBy = ulong.MaxValue;
     }
 
-    // ---------- CLIENT ----------
     public override void OnClientEnter(NetworkObject player)
     {
         if (!player.IsOwner) return;
 
         var rb = player.GetComponent<Rigidbody>();
         var router = player.GetComponent<PlayerInputRouter>();
-        var onFoot = player.GetComponent<OnFootController>();
+        var vehicleController = GetComponent<VanController>();
 
         rb.isKinematic = true;
+
+        vehicleController.PrepareExitTransform(transform, player.transform);
+
         player.transform.SetPositionAndRotation(
             seatPoint.position,
             seatPoint.rotation
         );
 
-        onFoot.enabled = false;
-        router.SetReceiver(vanController);
+        router.SetReceiver(vehicleController);
     }
 
     public override void OnClientExit(NetworkObject player)
@@ -47,9 +48,12 @@ public sealed class VanWorkstation : Workstation
         var rb = player.GetComponent<Rigidbody>();
         var router = player.GetComponent<PlayerInputRouter>();
         var onFoot = player.GetComponent<OnFootController>();
+        var vehicleController = GetComponent<VanController>();
 
         rb.isKinematic = false;
-        onFoot.enabled = true;
+
+        vehicleController.RestoreExitTransform(player.transform);
+
         router.SetReceiver(onFoot);
     }
 }

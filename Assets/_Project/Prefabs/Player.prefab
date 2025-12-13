@@ -322,9 +322,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24dba8163d0d70740a58b1576eee875d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraController
-  player: {fileID: 123270781266226655}
-  cameraPitch: {fileID: 1251538072910379939}
-  cinemachineCamera: {fileID: 4774759067537381552}
+  cameraPivot: {fileID: 1251538072910379939}
+  playerRoot: {fileID: 123270781266226655}
   sensitivity: 0.1
   minPitch: -80
   maxPitch: 80
@@ -340,10 +339,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51f915f8df3c42b41a41ad2f03d5fa79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OnFootController
+  ShowTopMostFoldoutHeaderGroup: 1
   movement: {fileID: 6351384763157934256}
   cameraController: {fileID: 7901800722267128437}
   interactor: {fileID: 7540119598439192780}
-  workstationManager: {fileID: 0}
+  workstationManager: {fileID: 1032828752185005165}
 --- !u!114 &6351384763157934256
 MonoBehaviour:
   m_ObjectHideFlags: 0

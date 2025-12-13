@@ -15,6 +15,7 @@ public sealed class PlayerInputSource : MonoBehaviour, IInputSource
     public bool InteractSecondary => actions.Player.InteractSecondary.WasPressedThisFrame();
     public bool InteractTertiary => actions.Player.InteractTertiary.WasPressedThisFrame();
     public bool Back => actions.Player.Back.WasPressedThisFrame();
+    public bool Ignition => actions.Player.Ignition.WasPressedThisFrame();
 
     private void Awake()
     {
@@ -48,4 +49,5 @@ public interface IInputSource
     bool InteractSecondary { get; }
     bool InteractTertiary { get; }
     bool Back { get; }
+    bool Ignition { get; }
 }
