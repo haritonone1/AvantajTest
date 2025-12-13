@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 4010102881633867614}
   - component: {fileID: 6351384763157934256}
   - component: {fileID: 7540119598439192780}
+  - component: {fileID: 1032828752185005165}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -342,6 +343,7 @@ MonoBehaviour:
   movement: {fileID: 6351384763157934256}
   cameraController: {fileID: 7901800722267128437}
   interactor: {fileID: 7540119598439192780}
+  workstationManager: {fileID: 0}
 --- !u!114 &6351384763157934256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,6 +382,19 @@ MonoBehaviour:
   interactMask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &1032828752185005165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025160666974418102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7257e4632fd224e4e95587fb0eb5cad5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorkstationManager
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &4774759067537381552
 GameObject:
   m_ObjectHideFlags: 0

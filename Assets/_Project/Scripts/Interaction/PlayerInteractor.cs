@@ -28,7 +28,7 @@ public sealed class PlayerInteractor : NetworkBehaviour
                 out RaycastHit hit,
                 interactDistance,
                 interactMask,
-                QueryTriggerInteraction.Ignore))
+                QueryTriggerInteraction.Collide))
         {
             currentTarget = hit.collider.GetComponentInParent<NetworkObject>();
             if (currentTarget == null) return;

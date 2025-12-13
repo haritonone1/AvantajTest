@@ -1,20 +1,18 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public sealed class OnFootController : MonoBehaviour, IInputReceiver
+public sealed class OnFootController : NetworkBehaviour, IInputReceiver
 {
     [SerializeField] private OnFootMovement movement;
     [SerializeField] private PlayerCameraController cameraController;
     [SerializeField] private PlayerInteractor interactor;
+    [SerializeField] private WorkstationManager workstationManager;
     private InteractCanvas interactCanvas;
-
-    private void Start()
-    {
-        interactCanvas = FindAnyObjectByType<InteractCanvas>();
-    }
 
     public void ReceiveInput(IInputSource input)
     {
+        if(!interactCanvas) interactCanvas = FindAnyObjectByType<InteractCanvas>();
         if(cameraController != null) cameraController.Rotate(input.Look);
         if(movement != null) movement.Move(input.Move, input.Sprint);
 
@@ -37,6 +35,11 @@ public sealed class OnFootController : MonoBehaviour, IInputReceiver
                 interactor.TryInteract(2);
 
             if (interactCanvas != null) interactCanvas.UpdateUI(interactor.GetUIData());
+        }
+        
+        if (input.Back && workstationManager.IsInWorkstation)
+        {
+            workstationManager.ExitServerRpc();
         }
     }
 }
