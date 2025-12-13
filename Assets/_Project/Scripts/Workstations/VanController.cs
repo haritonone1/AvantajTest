@@ -7,21 +7,32 @@ public class VanController : MonoBehaviour, IInputReceiver
     [SerializeField] private Rigidbody vehicleRigidbody;
 
     private WorkstationManager workstationManager;
+    private PlayerCameraController cameraController; // 👈 КАМЕРА КОНКРЕТНОГО ИГРОКА
 
-    private float pitch;
     private bool engineOn;
 
     private Transform vanTransform;
     private Vector3 savedLocalExitPosition;
     private Quaternion savedLocalExitRotation;
 
-    private void Awake()
+    // ===== ВЫЗЫВАЕТСЯ WORKSTATION'ОМ =====
+    public void AttachPlayer(NetworkObject player)
     {
-        workstationManager = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<WorkstationManager>();
+        workstationManager = player.GetComponent<WorkstationManager>();
+        cameraController = player.GetComponentInChildren<PlayerCameraController>(true);
+    }
+
+    public void DetachPlayer()
+    {
+        cameraController = null;
+        workstationManager = null;
     }
 
     public void ReceiveInput(IInputSource input)
     {
+        if (cameraController != null)
+            cameraController.Rotate(input.Look);
+
         if (input.Back)
         {
             ExitVehicle();
@@ -38,6 +49,17 @@ public class VanController : MonoBehaviour, IInputReceiver
         HandleVehicleMovement(input);
     }
 
+    public void OnEnterVan()
+    {
+        cameraController?.SetRotatePlayerYaw(false);
+    }
+
+    public void OnExitVan()
+    {
+        cameraController?.SetRotatePlayerYaw(true);
+    }
+
+    // ===== VEHICLE PLACEHOLDER =====
     private void HandleVehicleMovement(IInputSource input)
     {
         Throttle(input.Move.y);
@@ -47,17 +69,8 @@ public class VanController : MonoBehaviour, IInputReceiver
             Brake();
     }
 
-    public void EngineOn()
-    {
-        engineOn = true;
-        Debug.Log("ENGINE ON");
-    }
-
-    public void EngineOff()
-    {
-        engineOn = false;
-        Debug.Log("ENGINE OFF");
-    }
+    public void EngineOn() => engineOn = true;
+    public void EngineOff() => engineOn = false;
 
     public void Throttle(float amount)
     {
@@ -85,7 +98,6 @@ public class VanController : MonoBehaviour, IInputReceiver
     public void PrepareExitTransform(Transform van, Transform player)
     {
         vanTransform = van;
-
         savedLocalExitPosition = van.InverseTransformPoint(player.position);
         savedLocalExitRotation = Quaternion.Inverse(van.rotation) * player.rotation;
     }
@@ -93,7 +105,6 @@ public class VanController : MonoBehaviour, IInputReceiver
     private void ExitVehicle()
     {
         EngineOff();
-
         workstationManager.ExitServerRpc();
     }
 

@@ -27,18 +27,20 @@ public sealed class VanWorkstation : Workstation
 
         var rb = player.GetComponent<Rigidbody>();
         var router = player.GetComponent<PlayerInputRouter>();
-        var vehicleController = GetComponent<VanController>();
+        var vanController = GetComponent<VanController>();
 
         rb.isKinematic = true;
 
-        vehicleController.PrepareExitTransform(transform, player.transform);
+        vanController.AttachPlayer(player);
+        vanController.PrepareExitTransform(transform, player.transform);
+        vanController.OnEnterVan();
 
         player.transform.SetPositionAndRotation(
             seatPoint.position,
             seatPoint.rotation
         );
 
-        router.SetReceiver(vehicleController);
+        router.SetReceiver(vanController);
     }
 
     public override void OnClientExit(NetworkObject player)
