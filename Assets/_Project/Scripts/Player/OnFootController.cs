@@ -4,6 +4,7 @@ public sealed class OnFootController : MonoBehaviour, IInputReceiver
 {
     [SerializeField] private OnFootMovement movement;
     [SerializeField] private PlayerCameraController cameraController;
+    [SerializeField] private PlayerInteractor interactor;
 
     public void ReceiveInput(IInputSource input)
     {
@@ -12,5 +13,10 @@ public sealed class OnFootController : MonoBehaviour, IInputReceiver
 
         if (input.Jump)
             movement.Jump();
+
+        interactor.LocalTick();
+
+        if (input.Interact)
+            interactor.TryInteract();
     }
 }

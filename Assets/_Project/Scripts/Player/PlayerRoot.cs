@@ -25,6 +25,4 @@ public sealed class PlayerRoot : NetworkBehaviour
         inputRouter.Initialize(inputSource);
         inputRouter.SetReceiver(onFootController);
     }
-
-
 }
