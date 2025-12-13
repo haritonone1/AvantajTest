@@ -9,9 +9,11 @@ public sealed class PlayerInputSource : MonoBehaviour, IInputSource
 
     public Vector2 Move => actions.Player.Move.ReadValue<Vector2>();
     public Vector2 Look => actions.Player.Look.ReadValue<Vector2>();
-    public bool Interact => actions.Player.Interact.WasPressedThisFrame();
     public bool Sprint => actions.Player.Sprint.IsPressed();
     public bool Jump => actions.Player.Jump.WasPressedThisFrame();
+    public bool InteractPrimary => actions.Player.InteractPrimary.WasPressedThisFrame();
+    public bool InteractSecondary => actions.Player.InteractSecondary.WasPressedThisFrame();
+    public bool InteractTertiary => actions.Player.InteractTertiary.WasPressedThisFrame();
 
     private void Awake()
     {
@@ -39,7 +41,9 @@ public interface IInputSource
 {
     Vector2 Move { get; }
     Vector2 Look { get; }
-    bool Interact { get; }
     bool Sprint { get; }
     bool Jump { get; }
+    bool InteractPrimary { get; }
+    bool InteractSecondary { get; }
+    bool InteractTertiary { get; }
 }

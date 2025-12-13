@@ -1,20 +1,26 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 public sealed class PlayerInteractor : NetworkBehaviour
 {
+    public IReadOnlyList<IInteractable> CurrentInteractables => currentInteractables;
+    
     [Header("Raycast")]
     [SerializeField] private Transform viewOrigin;
     [SerializeField] private float interactDistance = 2.5f;
     [SerializeField] private LayerMask interactMask;
 
+    private readonly List<IInteractable> currentInteractables = new();
+    private NetworkObject currentTarget;
     private NetworkObject lastTarget;
 
     public void LocalTick()
     {
         if (!IsOwner) return;
 
-        lastTarget = null;
+        currentInteractables.Clear();
+        currentTarget = null;
 
         if (Physics.Raycast(
                 viewOrigin.position,
@@ -24,38 +30,78 @@ public sealed class PlayerInteractor : NetworkBehaviour
                 interactMask,
                 QueryTriggerInteraction.Ignore))
         {
-            lastTarget = hit.collider.GetComponentInParent<NetworkObject>();
+            currentTarget = hit.collider.GetComponentInParent<NetworkObject>();
+            if (currentTarget == null) return;
+
+            currentTarget.GetComponents(currentInteractables);
         }
     }
 
-    public void TryInteract()
+    public void TryInteract(int index)
     {
         if (!IsOwner) return;
-        if (lastTarget == null) return;
+        if (index < 0 || index >= currentInteractables.Count) return;
 
-        TryInteractServerRpc(lastTarget.NetworkObjectId);
+        TryInteractServerRpc(currentTarget.NetworkObjectId, index);
     }
 
     [ServerRpc]
-    private void TryInteractServerRpc(ulong targetId)
+    private void TryInteractServerRpc(ulong targetId, int index)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects
-                .TryGetValue(targetId, out NetworkObject target))
+                .TryGetValue(targetId, out var target))
             return;
 
-        if (!target.TryGetComponent<IInteractable>(out var interactable))
-            return;
+        var interactables = target.GetComponents<IInteractable>();
 
-        if (!interactable.CanInteract(NetworkObject))
-            return;
+        if (index >= interactables.Length) return;
+
+        var interactable = interactables[index];
+
+        if (!interactable.CanInteract(NetworkObject)) return;
 
         interactable.Interact(NetworkObject);
     }
-}
+    
+    public IReadOnlyList<InteractionUIData> GetUIData()
+    {
+        var list = new List<InteractionUIData>();
 
+        for (int i = 0; i < currentInteractables.Count && i < 3; i++)
+        {
+            list.Add(new InteractionUIData
+            {
+                Key = i switch
+                {
+                    0 => "E",
+                    1 => "F",
+                    2 => "G",
+                    _ => ""
+                },
+                Description = currentInteractables[i].GetDescription()
+            });
+        }
+
+        return list;
+    }
+}
 
 public interface IInteractable
 {
+    string GetDescription();
     bool CanInteract(NetworkObject player);
     void Interact(NetworkObject player);
+}
+
+public struct InteractionUIData
+{
+    public string Key;
+    public string Description;
+}
+
+[System.Serializable]
+public class InteractionDefinition
+{
+    [TextArea]
+    public string Description;
 }

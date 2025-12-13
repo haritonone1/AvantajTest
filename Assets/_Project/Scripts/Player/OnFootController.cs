@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public sealed class OnFootController : MonoBehaviour, IInputReceiver
@@ -5,18 +6,37 @@ public sealed class OnFootController : MonoBehaviour, IInputReceiver
     [SerializeField] private OnFootMovement movement;
     [SerializeField] private PlayerCameraController cameraController;
     [SerializeField] private PlayerInteractor interactor;
+    private InteractCanvas interactCanvas;
+
+    private void Start()
+    {
+        interactCanvas = FindAnyObjectByType<InteractCanvas>();
+    }
 
     public void ReceiveInput(IInputSource input)
     {
-        cameraController.Rotate(input.Look);
-        movement.Move(input.Move, input.Sprint);
+        if(cameraController != null) cameraController.Rotate(input.Look);
+        if(movement != null) movement.Move(input.Move, input.Sprint);
 
-        if (input.Jump)
+        if (movement != null && input.Jump)
             movement.Jump();
 
-        interactor.LocalTick();
+        if (interactor != null)
+        {
+            interactor.LocalTick();
 
-        if (input.Interact)
-            interactor.TryInteract();
+            interactor.LocalTick();
+
+            if (input.InteractPrimary)
+                interactor.TryInteract(0);
+
+            if (input.InteractSecondary)
+                interactor.TryInteract(1);
+
+            if (input.InteractTertiary)
+                interactor.TryInteract(2);
+
+            if (interactCanvas != null) interactCanvas.UpdateUI(interactor.GetUIData());
+        }
     }
 }

@@ -3,6 +3,13 @@ using UnityEngine;
 
 public sealed class TestInteractable : NetworkBehaviour, IInteractable
 {
+    
+    
+    public string GetDescription()
+    {
+        return "popa";
+    }
+
     public bool CanInteract(NetworkObject player)
     {
         return true;
