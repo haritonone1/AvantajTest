@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public sealed class CarMovingModule : MonoBehaviour
+public sealed class CarMovingModule : NetworkBehaviour
 {
     public float Speed => speed;
 
     [Header("Wheels")]
     [SerializeField] private List<WheelCollider> wheelColliders = new();
     [SerializeField] private int frontWheelsCount = 2;
-
+    
     [Header("Drive")]
     [SerializeField] private float motorPower = 500f;
     [SerializeField] private float brakePower = 5000f;
@@ -39,6 +40,8 @@ public sealed class CarMovingModule : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!IsOwnedByServer) return;
+
         UpdateSpeed();
         ApplyMotor();
         ApplySteering();

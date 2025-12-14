@@ -1985,9 +1985,25 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3919378534
       objectReference: {fileID: 0}
+    - target: {fileID: 930648472199839033, guid: 9bbcf272c5c10234799d53908506a408, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4215759319
+      objectReference: {fileID: 0}
     - target: {fileID: 972625455936359820, guid: 9bbcf272c5c10234799d53908506a408, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3874969304
+      objectReference: {fileID: 0}
+    - target: {fileID: 972625455936359820, guid: 9bbcf272c5c10234799d53908506a408, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4215759319
+      objectReference: {fileID: 0}
+    - target: {fileID: 2857602487424438221, guid: 9bbcf272c5c10234799d53908506a408, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1792745722
+      objectReference: {fileID: 0}
+    - target: {fileID: 2857602487424438221, guid: 9bbcf272c5c10234799d53908506a408, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 4215759319
       objectReference: {fileID: 0}
     - target: {fileID: 4625025618523732255, guid: 9bbcf272c5c10234799d53908506a408, type: 3}
       propertyPath: m_LocalPosition.x

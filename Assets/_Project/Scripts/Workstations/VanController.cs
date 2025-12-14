@@ -14,8 +14,9 @@ public sealed class VanController : MonoBehaviour, IInputReceiver
 
     private bool engineOn;
 
-    private Vector3 savedLocalExitPosition;
+    private Vector3 savedLocalExitOffset;
     private Quaternion savedLocalExitRotation;
+
 
     public void AttachPlayer(NetworkObject player)
     {
@@ -87,18 +88,18 @@ public sealed class VanController : MonoBehaviour, IInputReceiver
 
     public void PrepareExitTransform(Transform van, Transform player)
     {
-        savedLocalExitPosition = van.InverseTransformPoint(player.position);
-        savedLocalExitRotation = Quaternion.Inverse(van.rotation) * player.rotation;
+        savedLocalExitOffset = van.InverseTransformPoint(player.position);
+        savedLocalExitRotation =
+            Quaternion.Inverse(van.rotation) * player.rotation;
     }
 
-    public void RestoreExitTransform(Transform player)
+
+    public void RestoreExitTransform(Transform van, Transform player)
     {
-        if (vanTransform == null) return;
-        player.SetParent(null);
-
-        player.position = vanTransform.TransformPoint(savedLocalExitPosition);
-        player.rotation = vanTransform.rotation * savedLocalExitRotation;
+        player.position = van.TransformPoint(savedLocalExitOffset);
+        player.rotation = van.rotation * savedLocalExitRotation;
     }
+
 
     private void ExitVehicle()
     {
