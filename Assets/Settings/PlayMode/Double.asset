@@ -21,7 +21,7 @@ MonoBehaviour:
     - Main Editor|0_run
     - Main Editor|0_deploy
     m_PlayerTag: 
-    m_InitialScene: {fileID: 102900000, guid: 5bde71be909271642b24c6759bd5214f, type: 3}
+    m_InitialScene: {fileID: 102900000, guid: 296dd013a8e12b9408b5db15021db3f1, type: 3}
   m_EditorInstances: []
   m_LocalInstances:
   - Name: Instance

@@ -1,7 +1,9 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public sealed class PlayerCameraController : MonoBehaviour
 {
+    [SerializeField] private CinemachineCamera _camera;
     [SerializeField] private Transform cameraPivot;
     [SerializeField] private Transform playerRoot;
 
@@ -41,11 +43,13 @@ public sealed class PlayerCameraController : MonoBehaviour
     
     public void Enable()
     {
+        _camera.enabled = true;
         enabled = true;
     }
 
     public void Disable()
     {
+        _camera.enabled = false;
         enabled = false;
     }
 
