@@ -1,31 +1,35 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class VanController : MonoBehaviour, IInputReceiver
+public sealed class VanController : MonoBehaviour, IInputReceiver
 {
+    [Header("Modules")]
+    [SerializeField] private CarMovingModule carMoving;
+
     [Header("Vehicle")]
-    [SerializeField] private Rigidbody vehicleRigidbody;
+    [SerializeField] private Transform vanTransform;
 
     private WorkstationManager workstationManager;
-    private PlayerCameraController cameraController; // 👈 КАМЕРА КОНКРЕТНОГО ИГРОКА
+    private PlayerCameraController cameraController;
 
     private bool engineOn;
 
-    private Transform vanTransform;
     private Vector3 savedLocalExitPosition;
     private Quaternion savedLocalExitRotation;
 
-    // ===== ВЫЗЫВАЕТСЯ WORKSTATION'ОМ =====
     public void AttachPlayer(NetworkObject player)
     {
         workstationManager = player.GetComponent<WorkstationManager>();
         cameraController = player.GetComponentInChildren<PlayerCameraController>(true);
+
+        player.transform.SetParent(vanTransform, true);
     }
+
 
     public void DetachPlayer()
     {
-        cameraController = null;
         workstationManager = null;
+        cameraController = null;
     }
 
     public void ReceiveInput(IInputSource input)
@@ -46,7 +50,29 @@ public class VanController : MonoBehaviour, IInputReceiver
             return;
         }
 
-        HandleVehicleMovement(input);
+        HandleDriving(input);
+    }
+
+    private void HandleDriving(IInputSource input)
+    {
+        float throttle = input.Move.y;
+        float steer = input.Move.x;   
+
+        bool brake =
+            Mathf.Abs(throttle) < 0.01f;
+
+        carMoving.SetInput(throttle, steer, brake);
+    }
+
+    private void EngineOn()
+    {
+        engineOn = true;
+    }
+
+    private void EngineOff()
+    {
+        engineOn = false;
+        carMoving.StopInstant();
     }
 
     public void OnEnterVan()
@@ -59,60 +85,24 @@ public class VanController : MonoBehaviour, IInputReceiver
         cameraController?.SetRotatePlayerYaw(true);
     }
 
-    // ===== VEHICLE PLACEHOLDER =====
-    private void HandleVehicleMovement(IInputSource input)
-    {
-        Throttle(input.Move.y);
-        Steer(input.Move.x);
-
-        if (input.Move.y == 0)
-            Brake();
-    }
-
-    public void EngineOn() => engineOn = true;
-    public void EngineOff() => engineOn = false;
-
-    public void Throttle(float amount)
-    {
-        if (amount <= 0f) return;
-
-        vehicleRigidbody.AddForce(
-            vehicleRigidbody.transform.forward * amount * 1500f * Time.deltaTime,
-            ForceMode.Force
-        );
-    }
-
-    public void Brake()
-    {
-        vehicleRigidbody.linearVelocity *= 0.98f;
-    }
-
-    public void Steer(float amount)
-    {
-        vehicleRigidbody.AddTorque(
-            Vector3.up * amount * 400f * Time.deltaTime,
-            ForceMode.Force
-        );
-    }
-
     public void PrepareExitTransform(Transform van, Transform player)
     {
-        vanTransform = van;
         savedLocalExitPosition = van.InverseTransformPoint(player.position);
         savedLocalExitRotation = Quaternion.Inverse(van.rotation) * player.rotation;
+    }
+
+    public void RestoreExitTransform(Transform player)
+    {
+        if (vanTransform == null) return;
+        player.SetParent(null);
+
+        player.position = vanTransform.TransformPoint(savedLocalExitPosition);
+        player.rotation = vanTransform.rotation * savedLocalExitRotation;
     }
 
     private void ExitVehicle()
     {
         EngineOff();
         workstationManager.ExitServerRpc();
-    }
-
-    public void RestoreExitTransform(Transform player)
-    {
-        if (vanTransform == null) return;
-
-        player.position = vanTransform.TransformPoint(savedLocalExitPosition);
-        player.rotation = vanTransform.rotation * savedLocalExitRotation;
     }
 }

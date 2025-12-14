@@ -28,8 +28,10 @@ public sealed class VanWorkstation : Workstation
         var rb = player.GetComponent<Rigidbody>();
         var router = player.GetComponent<PlayerInputRouter>();
         var vanController = GetComponent<VanController>();
-
+        var col = player.GetComponent<Collider>();
+        
         rb.isKinematic = true;
+        if (col) col.enabled = false;
 
         vanController.AttachPlayer(player);
         vanController.PrepareExitTransform(transform, player.transform);
@@ -52,9 +54,11 @@ public sealed class VanWorkstation : Workstation
         var onFoot = player.GetComponent<OnFootController>();
         var vehicleController = GetComponent<VanController>();
         var vanController = GetComponent<VanController>();
+        var col = player.GetComponent<Collider>();
 
         vanController.OnExitVan();
         rb.isKinematic = false;
+        if (col) col.enabled = true;
 
         vehicleController.RestoreExitTransform(player.transform);
 
