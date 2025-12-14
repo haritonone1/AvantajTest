@@ -17,23 +17,27 @@ public sealed class PlayerCameraController : MonoBehaviour
         rotatePlayerYaw = value;
     }
 
+    private float yaw;
+
     public void Rotate(Vector2 look)
     {
-        float yaw = look.x * sensitivity;
+        float yawDelta = look.x * sensitivity;
         float pitchDelta = look.y * sensitivity;
 
         pitch = Mathf.Clamp(pitch - pitchDelta, minPitch, maxPitch);
-        cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
 
         if (rotatePlayerYaw)
         {
-            playerRoot.Rotate(Vector3.up * yaw, Space.World);
+            playerRoot.Rotate(Vector3.up * yawDelta, Space.World);
+            cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
         }
         else
         {
-            cameraPivot.Rotate(Vector3.up * yaw, Space.Self);
+            yaw += yawDelta;
+            cameraPivot.localRotation = Quaternion.Euler(pitch, yaw, 0f);
         }
     }
+
     
     public void Enable()
     {

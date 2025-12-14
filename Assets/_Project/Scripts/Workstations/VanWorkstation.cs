@@ -51,7 +51,9 @@ public sealed class VanWorkstation : Workstation
         var router = player.GetComponent<PlayerInputRouter>();
         var onFoot = player.GetComponent<OnFootController>();
         var vehicleController = GetComponent<VanController>();
+        var vanController = GetComponent<VanController>();
 
+        vanController.OnExitVan();
         rb.isKinematic = false;
 
         vehicleController.RestoreExitTransform(player.transform);
