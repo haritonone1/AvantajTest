@@ -31,8 +31,7 @@ public sealed class VanNetworkController : NetworkBehaviour
 
         if (exit)
         {
-            engineOn = false;
-            car.StopInstant();
+            HandleExit(rpcParams.Receive.SenderClientId);
             return;
         }
 
@@ -45,6 +44,25 @@ public sealed class VanNetworkController : NetworkBehaviour
 
         bool brake = Mathf.Abs(throttle) < 0.01f;
         car.SetInput(throttle, steer, brake);
+    }
+    
+    private void HandleExit(ulong clientId)
+    {
+        engineOn = false;
+        car.StopInstant();
+
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
+            return;
+
+        var playerObject = client.PlayerObject;
+        if (playerObject == null) return;
+
+        var workstationManager = playerObject.GetComponent<WorkstationManager>();
+        if (workstationManager == null) return;
+
+        workstationManager.ExitServerRpc();
+
+        driverClientId = ulong.MaxValue;
     }
 
     public void SetDriver(ulong clientId)

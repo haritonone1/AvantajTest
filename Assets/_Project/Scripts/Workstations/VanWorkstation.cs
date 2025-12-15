@@ -12,15 +12,23 @@ public sealed class VanWorkstation : Workstation
     private ulong occupiedBy = ulong.MaxValue;
     public bool IsOccupied => occupiedBy != ulong.MaxValue;
     private ulong driverClientId = ulong.MaxValue;
-
+    private Vector3 savedLocalExitOffset;
+    private Quaternion savedLocalExitRotation;
 
     public override void OnServerEnter(NetworkObject player)
     {
         occupiedBy = player.OwnerClientId;
         network.SetDriver(player.OwnerClientId);
 
+        var vanTransform = transform;
+
+        savedLocalExitOffset = vanTransform.InverseTransformPoint(player.transform.position);
+        savedLocalExitRotation =
+            Quaternion.Inverse(vanTransform.rotation) * player.transform.rotation;
+
         player.TrySetParent(GetComponent<NetworkObject>(), true);
     }
+
 
     public override void OnServerExit(NetworkObject player)
     {
@@ -66,16 +74,18 @@ public sealed class VanWorkstation : Workstation
         var rb = player.GetComponent<Rigidbody>();
         var router = player.GetComponent<PlayerInputRouter>();
         var onFoot = player.GetComponent<OnFootController>();
-        var vehicleController = GetComponent<VanController>();
         var vanController = GetComponent<VanController>();
         var col = player.GetComponent<Collider>();
 
         vanController.OnExitVan();
+
         rb.isKinematic = false;
         if (col) col.enabled = true;
 
-        vehicleController.RestoreExitTransform(transform, player.transform);
+        player.transform.position = transform.TransformPoint(savedLocalExitOffset);
+        player.transform.rotation = transform.rotation * savedLocalExitRotation;
 
         router.SetReceiver(onFoot);
     }
+
 }
