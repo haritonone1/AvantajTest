@@ -7,6 +7,7 @@ public sealed class VanController : MonoBehaviour, IInputReceiver
     [SerializeField] private CarMovingModule carMoving;
 
     [Header("Vehicle")]
+    [SerializeField] private VanNetworkController network;
     [SerializeField] private Transform vanTransform;
 
     private WorkstationManager workstationManager;
@@ -20,38 +21,19 @@ public sealed class VanController : MonoBehaviour, IInputReceiver
 
     public void AttachPlayer(NetworkObject player)
     {
-        workstationManager = player.GetComponent<WorkstationManager>();
         cameraController = player.GetComponentInChildren<PlayerCameraController>(true);
-
-        player.transform.SetParent(vanTransform, true);
-    }
-
-
-    public void DetachPlayer()
-    {
-        workstationManager = null;
-        cameraController = null;
     }
 
     public void ReceiveInput(IInputSource input)
     {
-        if (cameraController != null)
-            cameraController.Rotate(input.Look);
+        cameraController?.Rotate(input.Look);
 
-        if (input.Back)
-        {
-            ExitVehicle();
-            return;
-        }
-
-        if (!engineOn)
-        {
-            if (input.Ignition)
-                EngineOn();
-            return;
-        }
-
-        HandleDriving(input);
+        network.SendInputServerRpc(
+            input.Move.y,
+            input.Move.x,
+            input.Ignition,
+            input.Back
+        );
     }
 
     private void HandleDriving(IInputSource input)

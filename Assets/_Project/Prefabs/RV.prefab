@@ -505,6 +505,71 @@ WheelCollider:
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
+--- !u!1 &1562778663288966215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3853364074825144652}
+  m_Layer: 0
+  m_Name: Workstations
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3853364074825144652
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562778663288966215}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 235576274931710570}
+  m_Father: {fileID: 4625025618523732255}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2001426315509375483
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 235576274931710570}
+  m_Layer: 0
+  m_Name: Drive Workstation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &235576274931710570
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001426315509375483}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8883981208798942267}
+  - {fileID: 8375552749948558002}
+  m_Father: {fileID: 3853364074825144652}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2098419061369466383
 GameObject:
   m_ObjectHideFlags: 0
@@ -2224,6 +2289,7 @@ GameObject:
   - component: {fileID: 6214764737726533600}
   - component: {fileID: 3155884386205423105}
   - component: {fileID: 2700085973602046215}
+  - component: {fileID: 2208330044604024179}
   m_Layer: 0
   m_Name: RV
   m_TagString: Untagged
@@ -2263,11 +2329,11 @@ Transform:
   - {fileID: 4092263729341079193}
   - {fileID: 6674446460505734822}
   - {fileID: 6247460110942915260}
-  - {fileID: 8883981208798942267}
   - {fileID: 661339140160916771}
   - {fileID: 540405581097180348}
   - {fileID: 1325959408081224203}
   - {fileID: 8698121780472471397}
+  - {fileID: 3853364074825144652}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5561202172139377574
@@ -2309,7 +2375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1792745722
+  GlobalObjectIdHash: 4215759319
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -2382,6 +2448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VanWorkstation
   seatPoint: {fileID: 8375552749948558002}
   vanController: {fileID: 3155884386205423105}
+  network: {fileID: 2208330044604024179}
 --- !u!114 &3155884386205423105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2395,6 +2462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VanController
   carMoving: {fileID: 2700085973602046215}
+  network: {fileID: 2208330044604024179}
   vanTransform: {fileID: 8883981208798942267}
 --- !u!114 &2700085973602046215
 MonoBehaviour:
@@ -2420,6 +2488,20 @@ MonoBehaviour:
   maxSteerAngle: 45
   steerSmooth: 6
   speedMultiplier: 1
+--- !u!114 &2208330044604024179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5432665955677266853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aaabc27f43336b40b998077fe1bf1f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VanNetworkController
+  ShowTopMostFoldoutHeaderGroup: 1
+  car: {fileID: 2700085973602046215}
 --- !u!1 &5451012168103621317
 GameObject:
   m_ObjectHideFlags: 0
@@ -3788,12 +3870,11 @@ Transform:
   m_GameObject: {fileID: 7479675275510012165}
   serializedVersion: 2
   m_LocalRotation: {x: -0.70710707, y: -3.6701566e-13, z: -3.6701566e-13, w: 0.7071066}
-  m_LocalPosition: {x: -0.9443752, y: -0.16924047, z: 7.098586}
-  m_LocalScale: {x: 1.0213, y: 1.4416, z: 1.5651}
+  m_LocalPosition: {x: -0.94437516, y: -0.16924047, z: 7.098586}
+  m_LocalScale: {x: 1.0213, y: 1.4415998, z: 1.5651001}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8375552749948558002}
-  m_Father: {fileID: 4625025618523732255}
+  m_Children: []
+  m_Father: {fileID: 235576274931710570}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &279036124192208751
 MeshFilter:
@@ -4155,12 +4236,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8541444692485752729}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.70710677, y: 4.547473e-13, z: -4.547473e-13, w: 0.7071069}
-  m_LocalPosition: {x: 0, y: 0.33, z: -0.542}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.00000044703478, y: -5.1903875e-13, z: -6.4310986e-13, w: 1}
+  m_LocalPosition: {x: -0.94437516, y: -1.0175252, z: 6.622859}
+  m_LocalScale: {x: 1.0213, y: 1.5651006, z: 1.4416001}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8883981208798942267}
+  m_Father: {fileID: 235576274931710570}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &8719995485083664052
 GameObject:

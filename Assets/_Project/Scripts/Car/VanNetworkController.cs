@@ -5,8 +5,9 @@ public sealed class VanNetworkController : NetworkBehaviour
 {
     [SerializeField] private CarMovingModule car;
 
+    private ulong driverClientId = ulong.MaxValue;
     private bool engineOn;
-
+    
     public override void OnNetworkSpawn()
     {
         // Rigidbody активен ТОЛЬКО на сервере
@@ -16,21 +17,48 @@ public sealed class VanNetworkController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SetEngineStateServerRpc(bool value)
+    public void SendInputServerRpc(
+        float throttle,
+        float steer,
+        bool ignition,
+        bool exit,
+        ServerRpcParams rpcParams = default)
     {
-        engineOn = value;
+        if (!IsServer) return;
+
+        if (rpcParams.Receive.SenderClientId != driverClientId)
+            return;
+
+        if (exit)
+        {
+            engineOn = false;
+            car.StopInstant();
+            return;
+        }
 
         if (!engineOn)
-            car.StopInstant();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void SetInputServerRpc(float throttle, float steer)
-    {
-        if (!engineOn) return;
+        {
+            if (ignition)
+                engineOn = true;
+            return;
+        }
 
         bool brake = Mathf.Abs(throttle) < 0.01f;
         car.SetInput(throttle, steer, brake);
+    }
+
+    public void SetDriver(ulong clientId)
+    {
+        if (!IsServer) return;
+        driverClientId = clientId;
+    }
+
+    public void ClearDriver()
+    {
+        if (!IsServer) return;
+        driverClientId = ulong.MaxValue;
+        engineOn = false;
+        car.StopInstant();
     }
 
     private void FixedUpdate()

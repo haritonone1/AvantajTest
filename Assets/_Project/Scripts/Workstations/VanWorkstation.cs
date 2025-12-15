@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -5,30 +7,29 @@ public sealed class VanWorkstation : Workstation
 {
     [SerializeField] private Transform seatPoint;
     [SerializeField] private VanController vanController;
-
+    [SerializeField] private VanNetworkController network;
+    
     private ulong occupiedBy = ulong.MaxValue;
     public bool IsOccupied => occupiedBy != ulong.MaxValue;
+    private ulong driverClientId = ulong.MaxValue;
 
-    // ---------- SERVER ----------
+
     public override void OnServerEnter(NetworkObject player)
     {
         occupiedBy = player.OwnerClientId;
+        network.SetDriver(player.OwnerClientId);
 
-        var vanNetObj = GetComponent<NetworkObject>();
-        var playerNetObj = player;
-
-        playerNetObj.TrySetParent(vanNetObj, true);
+        player.TrySetParent(GetComponent<NetworkObject>(), true);
     }
-
 
     public override void OnServerExit(NetworkObject player)
     {
         if (occupiedBy == player.OwnerClientId)
             occupiedBy = ulong.MaxValue;
 
+        network.ClearDriver();
         player.TryRemoveParent(true);
     }
-
 
     public override void OnClientEnter(NetworkObject player)
     {
@@ -43,15 +44,20 @@ public sealed class VanWorkstation : Workstation
         if (col) col.enabled = false;
 
         vanController.AttachPlayer(player);
-        vanController.PrepareExitTransform(transform, player.transform);
         vanController.OnEnterVan();
 
-        player.transform.localPosition = seatPoint.localPosition;
-        player.transform.localRotation = seatPoint.localRotation;
+        StartCoroutine(PlaceAfterParent(player));
 
         router.SetReceiver(vanController);
     }
 
+    private IEnumerator PlaceAfterParent(NetworkObject player)
+    {
+        yield return null;
+
+        player.transform.localPosition = seatPoint.localPosition;
+        player.transform.localRotation = seatPoint.localRotation;
+    }
 
     public override void OnClientExit(NetworkObject player)
     {
